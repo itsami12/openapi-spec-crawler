@@ -1,0 +1,16 @@
+{
+  "name": "openapi-spec-crawler",
+  "version": "1.0.0",
+  "private": true,
+  "description": "OpenAPI specification crawler and versioned catalog for the APIMatic screening task.",
+  "type": "commonjs",
+  "scripts": {
+    "start": "node src/cli.js",
+    "crawl": "node src/cli.js crawl",
+    "demo": "node src/cli.js demo",
+    "test": "node --test"
+  },
+  "dependencies": {
+    "yaml": "^2.9.0"
+  }
+}

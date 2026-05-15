@@ -1,0 +1,574 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APIMatic · Intern Screening Task — OpenAPI Spec Crawler</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet">
+<style>
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+  :root {
+    --bg: #0d1117;
+    --bg2: #161b22;
+    --bg3: #1c2128;
+    --bg4: #21262d;
+    --border: #30363d;
+    --border2: #3d444d;
+    --text: #e6edf3;
+    --text2: #848d97;
+    --text3: #6e7681;
+    --green: #3fb950;
+    --green-bg: #0f2a1a;
+    --green-border: #196c2e;
+    --blue: #58a6ff;
+    --blue-bg: #0c2d6b;
+    --blue-border: #1f4a8a;
+    --amber: #d29922;
+    --amber-bg: #2a1f00;
+    --amber-border: #5e4a00;
+    --purple: #bc8cff;
+    --purple-bg: #2a1b5e;
+    --purple-border: #5a3e9e;
+    --red: #f85149;
+    --red-bg: #2a0a0a;
+    --red-border: #7a1e1e;
+    --teal: #39d3c3;
+    --teal-bg: #0a2825;
+    --teal-border: #1a5e5a;
+    --radius: 6px;
+    --radius-lg: 10px;
+  }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    padding: 3rem 1rem;
+  }
+
+  .mono { font-family: 'IBM Plex Mono', monospace; }
+  code { font-family: 'IBM Plex Mono', monospace; font-size: 0.9em; color: var(--purple); }
+
+  .wrapper {
+    max-width: 780px;
+    margin: 0 auto;
+  }
+
+  /* ── Header ── */
+  .header-band {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.75rem;
+    margin-bottom: 1.75rem;
+    position: relative;
+    overflow: hidden;
+  }
+  .header-band::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: linear-gradient(90deg, #3fb950, #58a6ff, #bc8cff);
+  }
+  .co-tag {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    background: var(--green-bg);
+    border: 1px solid var(--green-border);
+    color: var(--green);
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    padding: 3px 10px;
+    border-radius: 4px;
+    margin-bottom: .85rem;
+  }
+  .co-tag::before { content: '●'; font-size: 8px; }
+  .task-title {
+    font-size: 24px;
+    font-weight: 600;
+    color: var(--text);
+    letter-spacing: -0.4px;
+    margin-bottom: .4rem;
+  }
+  .task-sub {
+    font-size: 15px;
+    color: var(--text2);
+    font-weight: 300;
+    line-height: 1.65;
+    max-width: 600px;
+  }
+  .meta-row {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-top: 1.1rem;
+  }
+  .badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    border: 1px solid;
+  }
+  .b-blue   { background: var(--blue-bg);   border-color: var(--blue-border);   color: var(--blue);   }
+  .b-amber  { background: var(--amber-bg);  border-color: var(--amber-border);  color: var(--amber);  }
+  .b-purple { background: var(--purple-bg); border-color: var(--purple-border); color: var(--purple); }
+  .b-teal   { background: var(--teal-bg);   border-color: var(--teal-border);   color: var(--teal);   }
+
+  /* ── Sections ── */
+  .section { margin-bottom: 1.75rem; }
+  .section-label {
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+    text-transform: uppercase;
+    letter-spacing: .08em;
+    margin-bottom: .85rem;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+  }
+
+  /* ── Context box ── */
+  .context-box {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+    font-size: 14px;
+    color: var(--text2);
+    line-height: 1.75;
+  }
+  .context-box a    { color: var(--blue); text-decoration: none; }
+  .context-box a:hover { text-decoration: underline; }
+  .context-box strong { color: var(--text); font-weight: 500; }
+
+  /* ── Architecture flow ── */
+  .arch-diagram {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.5rem;
+  }
+  .arch-flow {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0;
+    flex-wrap: wrap;
+    row-gap: 10px;
+  }
+  .arch-node {
+    background: var(--bg3);
+    border: 1px solid var(--border2);
+    border-radius: var(--radius);
+    padding: .65rem 1.1rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12px;
+    color: var(--text);
+    text-align: center;
+    min-width: 100px;
+  }
+  .arch-node small { display: block; font-size: 10px; color: var(--text3); margin-top: 3px; }
+  .n-green  { background: var(--green-bg);  border-color: var(--green-border);  color: var(--green);  }
+  .n-blue   { background: var(--blue-bg);   border-color: var(--blue-border);   color: var(--blue);   }
+  .n-purple { background: var(--purple-bg); border-color: var(--purple-border); color: var(--purple); }
+  .n-teal   { background: var(--teal-bg);   border-color: var(--teal-border);   color: var(--teal);   }
+  .n-amber  { background: var(--amber-bg);  border-color: var(--amber-border);  color: var(--amber);  }
+  .arrow { color: var(--text3); font-size: 16px; padding: 0 8px; flex-shrink: 0; }
+
+  /* ── Requirements grid ── */
+  .req-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+  }
+  @media (max-width: 560px) { .req-grid { grid-template-columns: 1fr; } }
+  .req-card {
+    background: var(--bg2);
+    border: 1px solid var(--border);
+    border-radius: var(--radius-lg);
+    padding: 1.1rem;
+  }
+  .req-card-header {
+    display: flex;
+    align-items: center;
+    gap: 9px;
+    margin-bottom: .7rem;
+  }
+  .req-icon {
+    width: 30px; height: 30px;
+    border-radius: 6px;
+    display: flex; align-items: center; justify-content: center;
+    font-size: 15px; flex-shrink: 0;
+  }
+  .ri-green  { background: var(--green-bg);  color: var(--green);  }
+  .ri-blue   { background: var(--blue-bg);   color: var(--blue);   }
+  .ri-purple { background: var(--purple-bg); color: var(--purple); }
+  .ri-amber  { background: var(--amber-bg);  color: var(--amber);  }
+  .ri-teal   { background: var(--teal-bg);   color: var(--teal);   }
+  .ri-red    { background: var(--red-bg);    color: var(--red);    }
+  .req-card-title { font-size: 13px; font-weight: 500; color: var(--text); }
+  .req-list { list-style: none; }
+  .req-list li {
+    font-size: 13px;
+    color: var(--text2);
+    line-height: 1.65;
+    padding: 2px 0 2px 16px;
+    position: relative;
+  }
+  .req-list li::before { content: '–'; color: var(--text3); font-family: 'IBM Plex Mono', monospace; position: absolute; left: 0; }
+
+  /* ── Code block ── */
+  .code-block {
+    background: var(--bg3);
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    padding: 1.1rem 1.25rem;
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 12.5px;
+    color: var(--text2);
+    line-height: 1.9;
+    overflow-x: auto;
+    white-space: pre;
+  }
+  .kw  { color: var(--blue); }
+  .str { color: var(--green); }
+  .cmt { color: var(--text3); }
+  .key { color: var(--purple); }
+  .num { color: var(--amber); }
+
+  /* ── Eval bars ── */
+  .eval-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: .7rem 0;
+    border-bottom: 1px solid var(--border);
+  }
+  .eval-row:last-child { border-bottom: none; }
+  .eval-label { font-size: 13px; color: var(--text2); width: 200px; flex-shrink: 0; }
+  .eval-bar-wrap { flex: 1; background: var(--bg3); border-radius: 4px; height: 7px; overflow: hidden; }
+  .eval-bar          { height: 100%; border-radius: 4px; background: var(--green); }
+  .eval-bar.blue   { background: var(--blue); }
+  .eval-bar.purple { background: var(--purple); }
+  .eval-bar.amber  { background: var(--amber); }
+  .eval-bar.teal   { background: var(--teal); }
+  .eval-pct { font-family: 'IBM Plex Mono', monospace; font-size: 12px; color: var(--text3); width: 40px; text-align: right; flex-shrink: 0; }
+
+  /* ── Timeline ── */
+  .timeline { position: relative; padding-left: 24px; }
+  .timeline::before { content: ''; position: absolute; left: 6px; top: 6px; bottom: 6px; width: 1px; background: var(--border); }
+  .tl-item { position: relative; padding-left: 22px; padding-bottom: 1.25rem; }
+  .tl-item:last-child { padding-bottom: 0; }
+  .tl-dot { position: absolute; left: -16px; top: 5px; width: 11px; height: 11px; border-radius: 50%; background: var(--bg2); border: 2px solid var(--border2); }
+  .tl-item.active .tl-dot { background: var(--blue);  border-color: var(--blue);  }
+  .tl-item.done   .tl-dot { background: var(--green); border-color: var(--green); }
+  .tl-label { font-size: 12.5px; font-weight: 500; color: var(--text); margin-bottom: 3px; font-family: 'IBM Plex Mono', monospace; }
+  .tl-desc  { font-size: 13px; color: var(--text2); line-height: 1.65; }
+
+  /* ── Submit box ── */
+  .submit-box {
+    background: var(--bg2);
+    border: 1px solid var(--green-border);
+    border-radius: var(--radius-lg);
+    padding: 1.25rem;
+  }
+  .submit-title {
+    font-size: 13px; font-weight: 500; color: var(--green);
+    margin-bottom: .85rem;
+    display: flex; align-items: center; gap: 6px;
+    font-family: 'IBM Plex Mono', monospace;
+  }
+  .submit-item { display: flex; gap: 9px; align-items: flex-start; padding: 5px 0; font-size: 13px; color: var(--text2); line-height: 1.65; }
+  .check { color: var(--green); font-family: 'IBM Plex Mono', monospace; font-size: 12px; margin-top: 1px; flex-shrink: 0; }
+
+  /* ── Tip box ── */
+  .tip-box {
+    background: var(--amber-bg);
+    border: 1px solid var(--amber-border);
+    border-radius: var(--radius);
+    padding: 1rem 1.1rem;
+    margin-top: 1rem;
+  }
+  .tip-title { font-size: 11px; font-family: 'IBM Plex Mono', monospace; color: var(--amber); margin-bottom: .4rem; text-transform: uppercase; letter-spacing: .05em; }
+  .tip-text  { font-size: 13px; color: #a88b3a; line-height: 1.65; }
+
+  /* ── Footer ── */
+  .footer {
+    margin-top: 2.5rem;
+    padding-top: 1.1rem;
+    border-top: 1px solid var(--border);
+    display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 8px;
+  }
+  .footer-link { font-family: 'IBM Plex Mono', monospace; font-size: 11px; color: var(--blue); text-decoration: none; }
+  .footer-link:hover { text-decoration: underline; }
+  .footer-note { font-size: 11px; color: var(--text3); font-family: 'IBM Plex Mono', monospace; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+  <!-- ── HEADER ── -->
+  <div class="header-band">
+    <div class="co-tag">APIMatic · AI Engineering Intern</div>
+    <div class="task-title">Screening Task — OpenAPI Spec Crawler</div>
+    <div class="task-sub">Build a system that discovers, indexes, versions, and maintains a live catalog of public OpenAPI specifications from across the web.</div>
+  </div>
+
+  <!-- ── CONTEXT ── -->
+  <div class="section">
+    <div class="section-label mono">Context</div>
+    <div class="context-box">
+      At <strong>APIMatic</strong>, we transform raw API specifications into SDKs, docs, and developer portals. A core part of that pipeline is having reliable, up-to-date access to OpenAPI specs across the ecosystem. Your task simulates this real-world challenge: <strong>crawl sources that host OpenAPI specs, build a versioned catalog, and keep it fresh</strong>. This task evaluates engineering judgment, not just code. Think about edge cases, data integrity, and maintainability. <a href="https://www.apimatic.io/" target="_blank">Learn more about APIMatic →</a>
+    </div>
+  </div>
+
+  <!-- ── ARCHITECTURE ── -->
+  <div class="section">
+    <div class="section-label mono">System architecture (expected)</div>
+    <div class="arch-diagram">
+      <div class="arch-flow">
+        <div class="arch-node n-blue">Crawler<small>  </small></div>
+        <span class="arrow">→</span>
+        <div class="arch-node n-purple">Versioner<small>  </small></div>
+        <span class="arrow">→</span>
+        <div class="arch-node n-teal">Catalog<small>JSON</small></div>
+        <span class="arrow">→</span>
+        <div class="arch-node n-amber">OPTIONAL: Updater<small>cron / polling</small></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── REQUIREMENTS ── -->
+  <div class="section">
+    <div class="section-label mono">Requirements</div>
+    <div class="req-grid">
+
+      <div class="req-card">
+        <div class="req-card-header">
+          <div class="req-icon ri-green">🔭</div>
+          <div class="req-card-title">Source discovery</div>
+        </div>
+        <ul class="req-list">
+          <li>Use the GitHub Code Search API to find files named <code>openapi.yaml</code>, <code>openapi.json</code>, <code>swagger.yaml</code>, <code>swagger.json</code>, or <code>{API NAME}.json</code></li>
+          <li>Search public repos using queries</li>
+          <li>Optionally seed with a configurable list of known GitHub repo URLs to bootstrap the crawl</li>
+          <li>For simplicity, you can limit the crawl to stop after ingesting a certain number of specs</li>
+        </ul>
+      </div>
+
+      <div class="req-card">
+        <div class="req-card-header">
+          <div class="req-icon ri-blue">🕷️</div>
+          <div class="req-card-title">Spec parsing</div>
+        </div>
+        <ul class="req-list">
+          <li>Support OpenAPI 2.x (Swagger) and 3.x YAML/JSON</li>
+          <li>Extract: title, version, description, servers, paths count, tags</li>
+        </ul>
+      </div>
+
+      <div class="req-card">
+        <div class="req-card-header">
+          <div class="req-icon ri-purple">🌿</div>
+          <div class="req-card-title">Version management</div>
+        </div>
+        <ul class="req-list">
+          <li>Track spec version changes over time</li>
+          <li>OPTIONAL: Use both <code>info.version</code> field and content hash to detect updates</li>
+          <li>OPTIONAL: Retain previous versions (immutable history)</li>
+          <li>OPTIONAL: Emit a changelog diff summary on update (added/removed paths)</li>
+        </ul>
+      </div>
+
+      <div class="req-card">
+        <div class="req-card-header">
+          <div class="req-icon ri-teal">🗄️</div>
+          <div class="req-card-title">Catalog store</div>
+        </div>
+        <ul class="req-list">
+          <li>Persist the final catalog as a JSON file (<code>catalog.json</code>) and maintain a versioned store in your project's Github (no cloud DBs required)</li>
+          <li>File properties: id, source_url, title, latest_version, fetched_at, history[ ]</li>
+        </ul>
+      </div>
+
+      <div class="req-card">
+        <div class="req-card-header">
+          <div class="req-icon ri-amber">🔄</div>
+          <div class="req-card-title">OPTIONAL: Update cycle</div>
+        </div>
+        <ul class="req-list">
+          <li>Configurable polling interval (default: 24 h)</li>
+          <li>Incremental re-crawl: only re-fetch if ETag / Last-Modified has changed</li>
+          <li>Retry with backoff on fetch failures; mark as <code>stale</code> after N retries</li>
+          <li>Summary report after each run (new, updated, unchanged, failed)</li>
+        </ul>
+      </div>
+
+      <div class="req-card">
+        <div class="req-card-header">
+          <div class="req-icon ri-red">🛡️</div>
+          <div class="req-card-title">Quality &amp; ops</div>
+        </div>
+        <ul class="req-list">
+          <li>Structured logging (JSON preferred) with run IDs</li>
+          <li>Unit tests</li>
+          <li>A <code>README.md</code> with setup, architecture overview, and design decisions</li>
+        </ul>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ── SCHEMA ── -->
+  <div class="section">
+    <div class="section-label mono">Sample catalog output</div>
+    <div class="code-block">[
+  <span class="cmt">// catalog entry — stored per spec</span>
+  {
+    <span class="key">"id"</span>: <span class="str">"github:stripe/openapi/openapi.yaml"</span>,
+    <span class="key">"source_url"</span>: <span class="str">"https://raw.githubusercontent.com/stripe/openapi/master/openapi/spec3.yaml"</span>,
+    <span class="key">"title"</span>: <span class="str">"Stripe API"</span>,
+    <span class="key">"oas_version"</span>: <span class="str">"3.0.0"</span>,
+    <span class="key">"latest_version"</span>: <span class="str">"2024-06-20"</span>,
+    <span class="key">"paths_count"</span>: <span class="num">312</span>,
+    <span class="key">"fetched_at"</span>: <span class="str">"2025-05-14T08:22:11Z"</span>,
+    <span class="key">"status"</span>: <span class="str">"active"</span>,   <span class="cmt">// active | stale | invalid</span>
+    <span class="key">"OPTIONAL: history"</span>: [
+      { <span class="key">"version"</span>: <span class="str">"2024-04-10"</span>, <span class="key">"hash"</span>: <span class="str">"a3f2..."</span>, <span class="key">"paths_delta"</span>: <span class="num">+8</span> }
+    ]
+  },
+
+  <span class="cmt">// catalog entry — stored per spec</span>
+  {
+    <span class="key">"id"</span>: <span class="str">"github:APIs-guru/openapi-directory/twilio.yaml"</span>,
+    <span class="key">"source_url"</span>: <span class="str">"https://raw.githubusercontent.com/APIs-guru/openapi-directory/main/APIs/twilio.com/api/1.52.0/openapi.yaml"</span>,
+    <span class="key">"title"</span>: <span class="str">"Twilio - Api"</span>,
+    <span class="key">"oas_version"</span>: <span class="str">"3.0.1"</span>,
+    <span class="key">"latest_version"</span>: <span class="str">"1.52.0"</span>,
+    <span class="key">"paths_count"</span>: <span class="num">87</span>,
+    <span class="key">"fetched_at"</span>: <span class="str">"2025-05-14T09:10:44Z"</span>,
+    <span class="key">"status"</span>: <span class="str">"active"</span>,   <span class="cmt">// active | stale | invalid</span>
+    <span class="key">"OPTIONAL: history"</span>: [
+      { <span class="key">"version"</span>: <span class="str">"1.51.0"</span>, <span class="key">"hash"</span>: <span class="str">"c7e1..."</span>, <span class="key">"paths_delta"</span>: <span class="num">+3</span> },
+      { <span class="key">"version"</span>: <span class="str">"1.50.0"</span>, <span class="key">"hash"</span>: <span class="str">"b2d9..."</span>, <span class="key">"paths_delta"</span>: <span class="num">0</span> }
+    ]
+  }
+]</div>
+  </div>
+
+  <!-- ── EVALUATION ── -->
+  <div class="section">
+    <div class="section-label mono">Evaluation criteria</div>
+    <div class="context-box" style="padding: .75rem 1.25rem;">
+      <div class="eval-row">
+        <div class="eval-label">Correctness &amp; completeness</div>
+        <div class="eval-bar-wrap"><div class="eval-bar" style="width:90%"></div></div>
+        <div class="eval-pct mono">30%</div>
+      </div>
+      <div class="eval-row">
+        <div class="eval-label">Code quality &amp; structure</div>
+        <div class="eval-bar-wrap"><div class="eval-bar blue" style="width:75%"></div></div>
+        <div class="eval-pct mono">25%</div>
+      </div>
+      <div class="eval-row">
+        <div class="eval-label">Version &amp; catalog design</div>
+        <div class="eval-bar-wrap"><div class="eval-bar purple" style="width:60%"></div></div>
+        <div class="eval-pct mono">20%</div>
+      </div>
+      <div class="eval-row">
+        <div class="eval-label">Test coverage</div>
+        <div class="eval-bar-wrap"><div class="eval-bar teal" style="width:45%"></div></div>
+        <div class="eval-pct mono">15%</div>
+      </div>
+      <div class="eval-row">
+        <div class="eval-label">Documentation &amp; runability</div>
+        <div class="eval-bar-wrap"><div class="eval-bar amber" style="width:30%"></div></div>
+        <div class="eval-pct mono">10%</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ── SOURCES ── -->
+  <div class="section">
+    <div class="section-label mono">GitHub search queries to start with</div>
+    <div class="code-block"><span class="cmt"># GitHub Code Search API — find OpenAPI specs across public repos</span>
+<span class="str">https://api.github.com/search/code?q=filename:openapi.yaml</span>       <span class="cmt"># OAS 3.x YAML</span>
+<span class="str">https://api.github.com/search/code?q=filename:openapi.json</span>       <span class="cmt"># OAS 3.x JSON</span>
+<span class="str">https://api.github.com/search/code?q=filename:swagger.yaml</span>       <span class="cmt"># Swagger 2.x YAML</span>
+<span class="str">https://api.github.com/search/code?q=filename:swagger.json</span>       <span class="cmt"># Swagger 2.x JSON</span>
+
+<span class="cmt"># Tip: use a GitHub personal access token to get 30 req/min instead of 10</span>
+<span class="cmt"># Authorization: Bearer &lt;your_token&gt;</span></div>
+  </div>
+
+  <!-- ── DELIVERABLES ── -->
+  <div class="section">
+    <div class="section-label mono">Deliverables</div>
+    <div class="submit-box">
+      <div class="submit-title">📤 What to submit</div>
+      <div class="submit-item"><span class="check">✓</span> A GitHub repo (public or shared) with all source code in any Programming Language or Framework</div>
+      <div class="submit-item"><span class="check">✓</span> <code>README.md</code> covering setup, architecture, design decisions, and known tradeoffs</div>
+      <div class="submit-item"><span class="check">✓</span> A sample <code>catalog.json</code> output from an actual crawl run</div>
+      <div class="submit-item"><span class="check">✓</span> A short Loom/GIF demo (~2 min) showing: initial crawl → catalog output → simulated update → diff summary</div>
+      <div class="submit-item"><span class="check">✓</span> Passing test suite (<code>make test</code> or equivalent)</div>
+    </div>
+    <div class="tip-box">
+      <div class="tip-title">💡 Tip from the team</div>
+      <div class="tip-text">We care more about thoughtful tradeoffs than feature count. A crawler that handles 2 sources reliably, explains its versioning logic clearly, and has a well-structured codebase will score higher than one that covers 10 sources sloppily. Write code you'd want to maintain.</div>
+    </div>
+  </div>
+
+  <!-- ── FURTHER READING ── -->
+  <div class="section">
+    <div class="section-label mono">Further reading</div>
+    <div class="context-box">
+      <strong>OpenAPI &amp; Swagger fundamentals</strong>
+      <ul style="list-style:none;margin-top:.6rem;display:flex;flex-direction:column;gap:.4rem;">
+        <li>→ <a href="https://swagger.io/docs/specification/about/" target="_blank">Swagger / OpenAPI 2.x Overview</a> — official Swagger docs covering the 2.x spec structure</li>
+        <li>→ <a href="https://spec.openapis.org/oas/v3.1.0" target="_blank">OpenAPI Specification 3.1.0</a> — the full OAS 3.1 reference</li>
+        <li>→ <a href="https://learn.openapis.org/" target="_blank">learn.openapis.org</a> — community-maintained interactive guide to designing APIs with OpenAPI</li>
+      </ul>
+      <strong style="display:block;margin-top:1rem;">GitHub Code Search API</strong>
+      <ul style="list-style:none;margin-top:.6rem;display:flex;flex-direction:column;gap:.4rem;">
+        <li>→ <a href="https://docs.github.com/en/rest/search/search#search-code" target="_blank">GitHub REST API — Search code</a> — pagination, rate limits, and authentication details</li>
+        <li>→ <a href="https://docs.github.com/en/search-github/searching-on-github/searching-code" target="_blank">GitHub code search syntax</a> — qualifiers like <code>filename:</code>, <code>language:</code>, <code>path:</code></li>
+      </ul>
+      <strong style="display:block;margin-top:1rem;">Versioning &amp; content hashing</strong>
+      <ul style="list-style:none;margin-top:.6rem;display:flex;flex-direction:column;gap:.4rem;">
+        <li>→ <a href="https://developer.mozilla.org/en-US/docs/Web/HTTP/Headers/ETag" target="_blank">MDN — ETag header</a> — how ETags enable efficient conditional HTTP fetches</li>
+        <li>→ <a href="https://nodejs.org/api/crypto.html#cryptocreatehashalgorithm-options" target="_blank">Node.js <code>crypto.createHash</code></a> — built-in SHA-256 hashing for content fingerprinting</li>
+      </ul>
+      <strong style="display:block;margin-top:1rem;">Tooling &amp; libraries</strong>
+      <ul style="list-style:none;margin-top:.6rem;display:flex;flex-direction:column;gap:.4rem;">
+        <li>→ <a href="https://github.com/swagger-api/swagger-parser" target="_blank">swagger-parser</a> — validate and dereference OpenAPI 2/3 documents in Node.js</li>
+        <li>→ <a href="https://github.com/APIDevTools/openapi-schemas" target="_blank">openapi-schemas</a> — JSON Schema files for validating OAS documents offline</li>
+        <li>→ <a href="https://js-yaml.org/" target="_blank">js-yaml</a> — fast YAML parser/serialiser for Node.js</li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ── FOOTER ── -->
+  <div class="footer">
+    <a href="https://www.apimatic.io/ai-engineering-intern" class="footer-link" target="_blank">↗ apimatic.io/ai-engineering-intern</a>
+    <span class="footer-note">APIMatic · Screening Task v1.0</span>
+  </div>
+
+</div>
+</body>
+</html>

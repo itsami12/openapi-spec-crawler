@@ -1,0 +1,23 @@
+[
+  {
+    "id": "demo:payments",
+    "source_url": "https://example.com/specs/payments-openapi.yaml",
+    "title": "Demo Payments API",
+    "description": "Baseline fixture used to prove crawl and catalog updates.",
+    "oas_version": "3.0.1",
+    "latest_version": "1.0.0",
+    "paths_count": 2,
+    "servers": [
+      "https://api.example.com/v1"
+    ],
+    "tags": [
+      "payments"
+    ],
+    "fetched_at": "2026-05-15T08:00:00.000Z",
+    "status": "active",
+    "etag": null,
+    "last_modified": null,
+    "content_hash": "sample-hash-v1",
+    "history": []
+  }
+]

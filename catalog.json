@@ -1,0 +1,84 @@
+[
+  {
+    "id": "demo:payments",
+    "source_url": "C:\\Users\\itsam\\Downloads\\openapi-spec-crawler\\fixtures\\openapi-v2.yaml",
+    "title": "Demo Payments API",
+    "description": "Updated fixture with an added endpoint.",
+    "oas_version": "3.0.1",
+    "latest_version": "1.1.0",
+    "paths_count": 3,
+    "servers": [
+      "https://api.example.com/v1"
+    ],
+    "tags": [
+      "payments",
+      "payments",
+      "customers"
+    ],
+    "fetched_at": "2026-05-15T15:49:01.426Z",
+    "status": "active",
+    "etag": null,
+    "last_modified": null,
+    "content_hash": "c2b5f01abfa5ffae3228970edb289c37e68f01305fb269f54219ede47684e4b3",
+    "history": [
+      {
+        "version": "1.0.0",
+        "hash": "20363d560541678d17ef0e5bb33c1bd005e57e731af4fb61fe7d1da5b11b0b76",
+        "fetched_at": "2026-05-15T15:49:01.410Z",
+        "paths_count": 2,
+        "diff": null
+      }
+    ],
+    "spec_snapshot": {
+      "openapi": "3.0.1",
+      "info": {
+        "title": "Demo Payments API",
+        "version": "1.1.0",
+        "description": "Updated fixture with an added endpoint."
+      },
+      "servers": [
+        {
+          "url": "https://api.example.com/v1"
+        }
+      ],
+      "paths": {
+        "/payments": {
+          "get": {
+            "tags": [
+              "payments"
+            ],
+            "responses": {
+              "200": {
+                "description": "OK"
+              }
+            }
+          }
+        },
+        "/refunds": {
+          "post": {
+            "tags": [
+              "payments"
+            ],
+            "responses": {
+              "201": {
+                "description": "Created"
+              }
+            }
+          }
+        },
+        "/customers": {
+          "get": {
+            "tags": [
+              "customers"
+            ],
+            "responses": {
+              "200": {
+                "description": "OK"
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+]

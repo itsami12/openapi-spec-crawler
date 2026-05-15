@@ -1,0 +1,29 @@
+openapi: 3.0.1
+info:
+  title: Demo Payments API
+  version: 1.1.0
+  description: Updated fixture with an added endpoint.
+servers:
+  - url: https://api.example.com/v1
+paths:
+  /payments:
+    get:
+      tags:
+        - payments
+      responses:
+        '200':
+          description: OK
+  /refunds:
+    post:
+      tags:
+        - payments
+      responses:
+        '201':
+          description: Created
+  /customers:
+    get:
+      tags:
+        - customers
+      responses:
+        '200':
+          description: OK

@@ -1,0 +1,17 @@
+node_modules/
+.DS_Store
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+coverage/
+.cache/
+.vscode/
+.idea/
+.env
+.env.*
+*.log
+dist/
+__pycache__/
+*.sqlite
+/.env
+/.env.local

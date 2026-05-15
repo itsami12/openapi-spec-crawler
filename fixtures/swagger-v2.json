@@ -1,0 +1,28 @@
+{
+  "swagger": "2.0",
+  "info": {
+    "title": "Legacy Inventory API",
+    "version": "2.4.0",
+    "description": "Swagger 2 fixture for parser coverage."
+  },
+  "host": "inventory.example.com",
+  "basePath": "/api",
+  "schemes": ["https"],
+  "paths": {
+    "/items": {
+      "get": {
+        "tags": ["inventory"],
+        "responses": {
+          "200": {
+            "description": "OK"
+          }
+        }
+      }
+    }
+  },
+  "tags": [
+    {
+      "name": "inventory"
+    }
+  ]
+}

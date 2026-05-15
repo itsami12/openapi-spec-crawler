@@ -1,0 +1,22 @@
+openapi: 3.0.1
+info:
+  title: Demo Payments API
+  version: 1.0.0
+  description: Baseline fixture used to prove crawl and catalog updates.
+servers:
+  - url: https://api.example.com/v1
+paths:
+  /payments:
+    get:
+      tags:
+        - payments
+      responses:
+        '200':
+          description: OK
+  /refunds:
+    post:
+      tags:
+        - payments
+      responses:
+        '201':
+          description: Created
