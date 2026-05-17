@@ -7,6 +7,7 @@
   "scripts": {
     "start": "node src/cli.js",
     "crawl": "node src/cli.js crawl",
+    "update": "node src/cli.js update",
     "demo": "node src/cli.js demo",
     "test": "node --test"
   },
